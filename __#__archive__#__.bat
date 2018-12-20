@@ -1,15 +1,25 @@
-@REM Archiving of files
-@REM Drop list of files onto this batch file
-@rem echo off
+@REM miniVCS-winBatch
+@REM Drag-and-Drop archiving a list of files
+@REM https://github.com/reischlfranz/miniVCS-winBatch
+@echo off
 
 SETLOCAL
-SET WORKPATH=%~dp0
+@REM --------------------------------
+@REM ---   Individual variables   ---
+@REM --------------------------------
+@REM Change these to your situation
 SET ARCHIVEPATH=_archiv\
+
+
+SET WORKPATH=%~dp0
 IF NOT EXIST %WORKPATH%%ARCHIVEPATH% mkdir %WORKPATH%%ARCHIVEPATH%
 
 @REM YYYYMMDD
 SET DT=%date:~6,4%-%date:~3,2%-%date:~0,2%
+@REM HHMM
 SET TM=%time:~0,2%%time:~3,2%
+
+@REM Correct for spaces in time variable
 SET TM=%TM: =0%
 
 
@@ -31,12 +41,10 @@ for %%i in (%*) do (
 		@REM echo file path : %%~dpnxi
 		
 		@REM '*' at the end of new file name tricks xcopy into treating the path as file, rather than ask for confirmation whether it is a file or directory
-		xcopy /Q /H %%~dpnxi %WORKPATH%%ARCHIVEPATH%%%~ni_%DT%-%TM%%%~xi*
+		xcopy /Q /H "%%~dpnxi" "%WORKPATH%%ARCHIVEPATH%%%~ni_%DT%-%TM%%%~xi*"
 	)
 )
 
 :end
 
 ENDLOCAL
-
-
