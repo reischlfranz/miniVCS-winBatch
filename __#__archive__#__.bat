@@ -1,6 +1,6 @@
 @REM Archiving of files
 @REM Drop list of files onto this batch file
-@echo off
+@rem echo off
 
 SETLOCAL
 SET WORKPATH=%~dp0
@@ -10,6 +10,7 @@ IF NOT EXIST %WORKPATH%%ARCHIVEPATH% mkdir %WORKPATH%%ARCHIVEPATH%
 @REM YYYYMMDD
 SET DT=%date:~6,4%-%date:~3,2%-%date:~0,2%
 SET TM=%time:~0,2%%time:~3,2%
+SET TM=%TM: =0%
 
 
 @REM pause
