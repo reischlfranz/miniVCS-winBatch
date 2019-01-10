@@ -57,7 +57,6 @@ for %%i in (%*) do (
 		@REM File is directory?
 		IF EXIST %%~si\* (
 			@REM This is a directory: %%i
-			echo This is a directory: %%i
 			IF %USEZIP% EQU PS (
 				powershell -command "Compress-Archive -Path '%%~dpnxi' -CompressionLevel Optimal -DestinationPath '%WORKPATH%%ARCHIVEPATH%%%~ni_%DT%-%TM%%ZIPEXT%'"
 			)
@@ -68,7 +67,6 @@ for %%i in (%*) do (
 		)
 		IF NOT EXIST %%~si\* (
 			@REM This is a file: %%i
-			echo This is a file: %%i
 			IF %FILEACTION% EQU ZIP (
 				echo Trying to zip...
 				IF %USEZIP% == PS (
