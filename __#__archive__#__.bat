@@ -22,8 +22,8 @@ SET USEZIP=PS
 SET ZIPPATH="C:\Program Files\7-Zip\7z.exe"
 SET ZIPPARMS= a -r 
 
-SET WORKPATH=%~dp0
-IF NOT EXIST %WORKPATH%%ARCHIVEPATH% mkdir %WORKPATH%%ARCHIVEPATH%
+SET "WORKPATH=%~dp0"
+IF NOT EXIST "%WORKPATH%%ARCHIVEPATH%" mkdir "%WORKPATH%%ARCHIVEPATH%"
 
 :: YYYYMMDD
 SET DT=%date:~6,4%-%date:~3,2%-%date:~0,2%
@@ -44,9 +44,14 @@ for %%i in (%*) do (
       IF %USEZIP% EQU PS (
         powershell -command "Compress-Archive -Path '%%~dpnxi' -CompressionLevel Optimal -DestinationPath '%WORKPATH%%ARCHIVEPATH%%%~ni_%DT%-%TM%%ZIPEXT%'"
       )
+      
+      
       IF %USEZIP% EQU ZIP (
         %ZIPPATH% %ZIPPARMS% "%WORKPATH%%ARCHIVEPATH%%%~ni_%DT%-%TM%%ZIPEXT%" "%%~dpnxi"
       )
+      
+      :: Put archived zip-file in read-only mode
+      attrib +R "%WORKPATH%%ARCHIVEPATH%%%~ni_%DT%-%TM%%ZIPEXT%"
       
     )
     IF NOT EXIST %%~si\* (
@@ -55,6 +60,9 @@ for %%i in (%*) do (
         echo Trying to zip...
         IF %USEZIP% == PS (
           powershell -command "Compress-Archive -Path '%%~dpnxi' -CompressionLevel Optimal -DestinationPath '%WORKPATH%%ARCHIVEPATH%%%~ni_%%~xi.%DT%-%TM%%ZIPEXT%'"
+          
+          :: Put archived zip-file in read-only mode
+          attrib +R "%WORKPATH%%ARCHIVEPATH%%%~ni_%%~xi.%DT%-%TM%%ZIPEXT%"
         )
         IF %USEZIP% EQU ZIP (
           %ZIPPATH% %ZIPPARMS% "%WORKPATH%%ARCHIVEPATH%%%~ni_%%~xi.%DT%-%TM%%ZIPEXT%" "%%~dpnxi"
@@ -66,6 +74,10 @@ for %%i in (%*) do (
         
         :: (Optional) "Touch" the archived file to update the time stamp
         copy /B "%WORKPATH%%ARCHIVEPATH%%%~ni_%DT%-%TM%%%~xi"+,, "%WORKPATH%%ARCHIVEPATH%%%~ni_%DT%-%TM%%%~xi" /Y
+        
+        :: Put archived file in read-only mode
+        attrib +R "%WORKPATH%%ARCHIVEPATH%%%~ni_%DT%-%TM%%%~xi"
+        
       )
     )
   )
