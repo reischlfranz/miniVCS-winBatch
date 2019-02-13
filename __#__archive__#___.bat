@@ -23,12 +23,12 @@ SET ZIPPATH="C:\Program Files\7-Zip\7z.exe"
 SET ZIPPARMS= a -r 
 
 :: No parameters given - print help
-IF "%1" EQU "" GOTO help
+IF "%~1" EQU "" GOTO help
 :: Check for parameters: '/?'
 :argparseloop
-  IF "%1" EQU "/?" goto help
+  IF "%~1" EQU "/?" goto help
   shift
-if "%1" NEQ "" goto argparseloop
+if "%~1" NEQ "" goto argparseloop
 
 :: Set the working directory (Where this file resides) and the archive directory
 SET "WORKPATH=%~dp0"
@@ -69,14 +69,14 @@ for %%i in (%*) do (
       IF %FILEACTION% EQU ZIP (
         echo Trying to zip...
         IF %USEZIP% == PS (
-          powershell -command "Compress-Archive -Path '%%~dpnxi' -CompressionLevel Optimal -DestinationPath '%WORKPATH%%ARCHIVEPATH%%%~ni_%%~xi.%DT%-%TM%%ZIPEXT%'"
-          
-          :: Put archived zip-file in read-only mode
-          attrib +R "%WORKPATH%%ARCHIVEPATH%%%~ni_%%~xi.%DT%-%TM%%ZIPEXT%"
+          powershell -command "Compress-Archive -Path '%%~dpnxi' -CompressionLevel Optimal -DestinationPath '%WORKPATH%%ARCHIVEPATH%%%~ni%%~xi.%DT%-%TM%%ZIPEXT%'"
         )
         IF %USEZIP% EQU ZIP (
-          %ZIPPATH% %ZIPPARMS% "%WORKPATH%%ARCHIVEPATH%%%~ni_%%~xi.%DT%-%TM%%ZIPEXT%" "%%~dpnxi"
+          %ZIPPATH% %ZIPPARMS% "%WORKPATH%%ARCHIVEPATH%%%~ni%%~xi.%DT%-%TM%%ZIPEXT%" "%%~dpnxi"
         )
+
+        :: Put archived zip-file in read-only mode
+        attrib +R "%WORKPATH%%ARCHIVEPATH%%%~ni%%~xi.%DT%-%TM%%ZIPEXT%"
       )
       IF %FILEACTION% EQU COPY (
         :: '*' at the end of new file name tricks xcopy into treating the path as file, rather than ask for confirmation whether it is a file or directory
