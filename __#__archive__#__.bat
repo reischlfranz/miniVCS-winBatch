@@ -1,7 +1,7 @@
 :: miniVCS-winBatch
 :: Drag-and-Drop archiving a list of files and folders
 :: https://github.com/reischlfranz/miniVCS-winBatch
-@echo off
+::@echo off
 
 SETLOCAL
 :: --------------------------------
@@ -12,7 +12,7 @@ SET ARCHIVEPATH=_archiv\
 SET ZIPEXT=.zip
 
 :: Set to ZIP to Zip single files, set to COPY to just copy them
-SET FILEACTION=COPY
+SET FILEACTION=ZIP
 
 :: Set to PS to use PowerShell Zip functionality
 :: Set to ZIP to use external zip tool (see below)
@@ -23,12 +23,12 @@ SET ZIPPATH="C:\Program Files\7-Zip\7z.exe"
 SET ZIPPARMS= a -r 
 
 :: No parameters given - print help
-IF "%1" EQU "" GOTO help
+IF "%~1" EQU "" GOTO help
 :: Check for parameters: '/?'
 :argparseloop
-  IF "%1" EQU "/?" goto help
+  IF "%~1" EQU "/?" goto help
   shift
-if "%1" NEQ "" goto argparseloop
+if "%~1" NEQ "" goto argparseloop
 
 :: Set the working directory (Where this file resides) and the archive directory
 SET "WORKPATH=%~dp0"
