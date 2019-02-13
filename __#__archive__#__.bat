@@ -7,7 +7,7 @@ SETLOCAL
 :: --------------------------------
 :: ---   Individual variables   ---
 :: --------------------------------
-:: Change these to your situation
+:: Change these to your situation. Note: Archive path is relative to this file!
 SET ARCHIVEPATH=_archiv\
 SET ZIPEXT=.zip
 
@@ -23,13 +23,14 @@ SET ZIPPATH="C:\Program Files\7-Zip\7z.exe"
 SET ZIPPARMS= a -r 
 
 :: No parameters given - print help
-IF NOT EXIST %%0 GOTO help
+IF "%1" EQU "" GOTO help
+:: Check for parameters: '/?'
+:argparseloop
+  IF "%1" EQU "/?" goto help
+  shift
+if "%1" NEQ "" goto argparseloop
 
-:: Check for parameter '/?'
-for %%i in (%*) do (
-  IF (%%i EQU "/?") goto help
-)
-
+:: Set the working directory (Where this file resides) and the archive directory
 SET "WORKPATH=%~dp0"
 IF NOT EXIST "%WORKPATH%%ARCHIVEPATH%" mkdir "%WORKPATH%%ARCHIVEPATH%"
 
@@ -43,6 +44,7 @@ SET TM=%TM: =0%
 
 :: For each file dropped onto batch file
 for %%i in (%*) do (
+  
   IF  EXIST %%i (
   
     :: File is directory?
