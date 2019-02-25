@@ -22,17 +22,8 @@ SET USEZIP=PS
 SET ZIPPATH="C:\Program Files\7-Zip\7z.exe"
 SET ZIPPARMS= a -r 
 
-:: No parameters given - print help
-IF "%~1" EQU "" GOTO help
-:: Check for parameters: '/?'
-:argparseloop
-  IF "%~1" EQU "/?" goto help
-  shift
-if "%~1" NEQ "" goto argparseloop
-
 :: Set the working directory (Where this file resides) and the archive directory
 SET "WORKPATH=%~dp0"
-IF NOT EXIST "%WORKPATH%%ARCHIVEPATH%" mkdir "%WORKPATH%%ARCHIVEPATH%"
 
 :: YYYYMMDD
 SET DT=%date:~6,4%-%date:~3,2%-%date:~0,2%
@@ -41,6 +32,17 @@ SET TM=%time:~0,2%%time:~3,2%
 
 :: Correct for spaces in time variable
 SET TM=%TM: =0%
+
+:: No parameters given - print help
+IF "%~1" EQU "" GOTO help
+:: Check for parameters: '/?'
+:argparseloop
+  IF "%~1" EQU "/?" goto help
+  shift
+if "%~1" NEQ "" goto argparseloop
+
+:: Create archive folder, if not exists
+IF NOT EXIST "%WORKPATH%%ARCHIVEPATH%" mkdir "%WORKPATH%%ARCHIVEPATH%"
 
 :: For each file dropped onto batch file
 for %%i in (%*) do (
@@ -133,4 +135,3 @@ GOTO end
 :end
 
 ENDLOCAL
-
